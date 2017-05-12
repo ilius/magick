@@ -5,6 +5,7 @@ package magick
 import "C"
 
 import (
+	"fmt"
 	"runtime"
 	"unsafe"
 )
@@ -43,6 +44,10 @@ func (in *Info) Quality() uint {
 // This parameter does not affect all formats.
 func (in *Info) SetQuality(q uint) {
 	in.info.quality = magickSize(q)
+}
+
+func (in *Info) SetDensity(x_density uint, y_density uint) {
+	in.info.density = C.CString(fmt.Sprintf("%dx%d", x_density, y_density))
 }
 
 // Colorspace returns the colorspace used when encoding the image.
