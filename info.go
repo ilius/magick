@@ -7,6 +7,7 @@ import "C"
 import (
 	"fmt"
 	"runtime"
+	"strings"
 	"unsafe"
 )
 
@@ -44,6 +45,32 @@ func (in *Info) Quality() uint {
 // This parameter does not affect all formats.
 func (in *Info) SetQuality(q uint) {
 	in.info.quality = magickSize(q)
+}
+
+func (in *Info) SetCompression(compression string) error {
+	switch strings.ToLower(compression) {
+	case "undefined":
+		in.info.compression = C.UndefinedCompression
+	case "none", "":
+		in.info.compression = C.NoCompression
+	case "bzip":
+		in.info.compression = C.BZipCompression
+	case "fax":
+		in.info.compression = C.FaxCompression
+	case "group4":
+		in.info.compression = C.Group4Compression
+	case "jpeg":
+		in.info.compression = C.JPEGCompression
+	case "lzw":
+		in.info.compression = C.LZWCompression
+	case "runlengthencoded":
+		in.info.compression = C.RunlengthEncodedCompression
+	case "zip":
+		in.info.compression = C.ZipCompression
+	default:
+		return fmt.Errorf("invalid compression %#v", compression)
+	}
+	return nil
 }
 
 func (in *Info) SetDensity(x_density uint, y_density uint) {
